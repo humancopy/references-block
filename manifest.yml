@@ -1,0 +1,18 @@
+modules:
+  macro:
+    - key: references-block-hello-world-macro
+      resource: main
+      render: native
+      resolver:
+        function: resolver
+      title: References links block
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+app:
+  runtime:
+    name: nodejs20.x
+  id: ari:cloud:ecosystem::app/4f211fdd-284c-48e9-9fd4-55b3ef7b1656

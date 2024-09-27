@@ -21,22 +21,17 @@ const App = () => {
   const [rows, setRows] = useState(null);
 
   useEffect(() => {
-    invoke('getLinks').then(setRows).catch((err) => console.error("Failed!", err));
+    invoke("getLinks").then(setRows).catch((err) => console.error("Failed!", err));
   }, []);
 
   return (
     <>
-      { rows ?
-        (
-          <DynamicTable
-            caption="List of links"
-            head={head}
-            rows={rows}
-          />
-        ) : (
-          <Text>Loading...</Text>
-        )
-      }
+      <DynamicTable
+        caption="List of links"
+        isLoading={rows ? false : true}
+        head={head}
+        rows={rows}
+      />
     </>
   );
 };

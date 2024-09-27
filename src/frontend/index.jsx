@@ -1,18 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text } from '@forge/react';
+import ForgeReconciler, { Text, DynamicTable } from '@forge/react';
 import { invoke } from '@forge/bridge';
 
+export const head = {
+  cells: [
+    {
+      key: "name",
+      content: "Name",
+      isSortable: true,
+    },
+    {
+      key: "link",
+      content: "Link",
+      isSortable: false,
+    },
+  ],
+};
+
 const App = () => {
-  const [data, setData] = useState(null);
+  const [rows, setRows] = useState(null);
 
   useEffect(() => {
-    invoke('getText', { example: 'my-invoke-variable' }).then(setData);
+    invoke('getLinks').then(setRows).catch((err) => console.error("Failed!", err));
   }, []);
 
   return (
     <>
-      <Text>Hello world!</Text>
-      <Text>{data ? data : 'Loading...'}</Text>
+      { rows ?
+        (
+          <DynamicTable
+            caption="List of links"
+            head={head}
+            rows={rows}
+          />
+        ) : (
+          <Text>Loading...</Text>
+        )
+      }
     </>
   );
 };

@@ -6,6 +6,7 @@ const resolver = new Resolver();
 
 resolver.define('getLinks', async (req) => {
   const contentId = req.context.extension.content.id;
+  const payload = req.payload;
 
   const res = await api.asApp().requestConfluence(route`/wiki/api/v2/pages/${contentId}?body-format=VIEW`);
   const data = await res.json();
@@ -15,20 +16,20 @@ resolver.define('getLinks', async (req) => {
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;
 
-  const extract = req.context.extension.config.extract;
+  const config = req.context.extension.config || payload.defaultConfig;
 
   const selectors = [];
 
-  if (extract.includes("external")) {
+  if (config.extract.includes("external")) {
     selectors.push('a[href^="http"]', 'a[href^="ftp"]', 'a[href^="sftp"]');
   }
-  if (extract.includes("ftp")) {
+  if (config.extract.includes("ftp")) {
     selectors.push('a[href^="ftp"]', 'a[href^="sftp"]');
   }
-  if (extract.includes("internal")) {
+  if (config.extract.includes("internal")) {
     selectors.push('a[href^="/"]');
   }
-  if (extract.includes("emails")) {
+  if (config.extract.includes("emails")) {
     selectors.push('a[href^="mailto:"]');
   }
 

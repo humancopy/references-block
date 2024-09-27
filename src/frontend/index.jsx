@@ -50,7 +50,7 @@ const App = () => {
   useEffect(() => {
     view.getContext().then(setContext);
 
-    invoke("getLinks")
+    invoke("getLinks", {defaultConfig: defaultConfig})
       .then((links) => setRows(
         links.map((link, index) => ({
           key: `row-${index}`,

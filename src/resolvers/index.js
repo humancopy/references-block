@@ -15,7 +15,26 @@ resolver.define('getLinks', async (req) => {
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;
 
-  return Array.from(doc.querySelectorAll('a[href*="http"], a[href*="/"]')).map((link) => ({
+  const extract = req.context.extension.config.extract;
+
+  const selectors = [];
+
+  if (extract.includes("external")) {
+    selectors.push('a[href^="http"]');
+  }
+  if (extract.includes("internal")) {
+    selectors.push('a[href^="/"]');
+  }
+  if (extract.includes("emails")) {
+    selectors.push('a[href^="mailto:"]');
+  }
+
+  const selector = selectors.join(',');
+  if (!selector) {
+    return [];
+  }
+
+  return Array.from(doc.querySelectorAll(selector)).map((link) => ({
     text: link.text,
     href: link.href,
   }));

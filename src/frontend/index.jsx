@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield } from '@forge/react';
+import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield, CheckboxGroup } from '@forge/react';
 import { view, invoke } from '@forge/bridge';
 
 export const head = {
@@ -17,9 +17,16 @@ export const head = {
   ],
 };
 
+const extract_options = [
+  { value: "external", label: "External" },
+  { value: "internal", label: "Internal" },
+  { value: "emails", label: "Emails" },
+];
+
 const defaultConfig = {
   table_title: 'References',
-  empty_text: 'No links found'
+  empty_text: 'No links found',
+  extract: ["external", "internal"],
 };
 
 const Config = () => {
@@ -29,6 +36,8 @@ const Config = () => {
       <Textfield name="table_title" defaultValue={defaultConfig.table_title} />
       <Label>Empty text</Label>
       <Textfield name="empty_text" defaultValue={defaultConfig.empty_text} />
+      <Label>Which links to extract?</Label>
+      <CheckboxGroup name="extract" options={extract_options} defaultValue={defaultConfig.extract} />
     </>
   );
 };
@@ -38,26 +47,28 @@ const App = () => {
   const [rows, setRows] = useState(null);
 
   useEffect(() => {
-    view.getContext().then(setContext);
+    view.getContext().then((context) => {
+      setContext(context);
 
-    invoke("getLinks")
-      .then((links) => setRows(
-        links.map((link, index) => ({
-          key: `row-${index}`,
-          cells: [
-            {
-              key: `link-name-${index}`,
-              content: link.text.trim() || '---',
-            },
-            {
-              key: `link-href-${index}`,
-              content: <Link href={link.href}>{link.href}</Link>,
-            }
-          ]
-        }))
-      ))
-      .catch((err) => console.error("Failed!", err))
-    ;
+      invoke("getLinks")
+        .then((links) => setRows(
+          links.map((link, index) => ({
+            key: `row-${index}`,
+            cells: [
+              {
+                key: `link-name-${index}`,
+                content: link.text.trim() || '---',
+              },
+              {
+                key: `link-href-${index}`,
+                content: <Link href={link.href}>{link.href}</Link>,
+              }
+            ]
+          }))
+        ))
+        .catch((err) => console.error("Failed!", err))
+      ;
+    });
   }, []);
 
   const config = context?.extension.config || defaultConfig;

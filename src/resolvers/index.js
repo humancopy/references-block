@@ -20,7 +20,10 @@ resolver.define('getLinks', async (req) => {
   const selectors = [];
 
   if (extract.includes("external")) {
-    selectors.push('a[href^="http"]');
+    selectors.push('a[href^="http"]', 'a[href^="ftp"]', 'a[href^="sftp"]');
+  }
+  if (extract.includes("ftp")) {
+    selectors.push('a[href^="ftp"]', 'a[href^="sftp"]');
   }
   if (extract.includes("internal")) {
     selectors.push('a[href^="/"]');

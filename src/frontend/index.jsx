@@ -20,13 +20,14 @@ export const head = {
 const extract_options = [
   { value: "external", label: "External" },
   { value: "internal", label: "Internal" },
+  { value: "ftp", label: "(S)FTP" },
   { value: "emails", label: "Emails" },
 ];
 
 const defaultConfig = {
   table_title: 'References',
   empty_text: 'No links found',
-  extract: ["external", "internal"],
+  extract: ["external", "internal", "ftp"],
 };
 
 const Config = () => {

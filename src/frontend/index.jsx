@@ -17,13 +17,18 @@ export const head = {
   ],
 };
 
+const defaultConfig = {
+  table_title: 'References',
+  empty_text: 'No links found'
+};
+
 const Config = () => {
   return (
     <>
       <Label>Table title</Label>
-      <Textfield name="table_title" />
+      <Textfield name="table_title" defaultValue={defaultConfig.table_title} />
       <Label>Empty text</Label>
-      <Textfield name="empty_text" />
+      <Textfield name="empty_text" defaultValue={defaultConfig.empty_text} />
     </>
   );
 };
@@ -55,7 +60,7 @@ const App = () => {
     ;
   }, []);
 
-  const config = context?.extension.config;
+  const config = context?.extension.config || defaultConfig;
   const table_title = config?.table_title;
   const empty_text = config?.empty_text;
 

@@ -15,7 +15,7 @@ resolver.define('getLinks', async (req) => {
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;
 
-  const links = doc.querySelectorAll('a');
+  const links = doc.querySelectorAll('a[href*="http"], a[href*="/"]');
 
   return Array.from(links).map((link, index) => ({
     key: `row-${index}`,

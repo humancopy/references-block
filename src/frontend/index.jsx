@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text, DynamicTable, Link } from '@forge/react';
-import { invoke } from '@forge/bridge';
+import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield } from '@forge/react';
+import { view, invoke } from '@forge/bridge';
 
 export const head = {
   cells: [
@@ -17,10 +17,24 @@ export const head = {
   ],
 };
 
+const Config = () => {
+  return (
+    <>
+      <Label>Table title</Label>
+      <Textfield name="table_title" />
+      <Label>Empty text</Label>
+      <Textfield name="empty_text" />
+    </>
+  );
+};
+
 const App = () => {
+  const [context, setContext] = useState(undefined);
   const [rows, setRows] = useState(null);
 
   useEffect(() => {
+    view.getContext().then(setContext);
+
     invoke("getLinks")
       .then((links) => setRows(
         links.map((link, index) => ({
@@ -41,14 +55,18 @@ const App = () => {
     ;
   }, []);
 
+  const config = context?.extension.config;
+  const table_title = config?.table_title;
+  const empty_text = config?.empty_text;
+
   return (
     <>
       <DynamicTable
-        caption="List of links"
+        caption={table_title}
         isLoading={rows ? false : true}
         head={head}
         rows={rows}
-        emptyView="No links found"
+        emptyView={empty_text}
       />
     </>
   );
@@ -59,3 +77,5 @@ ForgeReconciler.render(
     <App />
   </React.StrictMode>
 );
+
+ForgeReconciler.addConfig(<Config />);

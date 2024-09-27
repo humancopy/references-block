@@ -6,6 +6,7 @@ modules:
       resolver:
         function: resolver
       title: References table
+      config: true
   function:
     - key: resolver
       handler: index.handler

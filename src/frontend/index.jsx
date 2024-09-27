@@ -48,28 +48,26 @@ const App = () => {
   const [rows, setRows] = useState(null);
 
   useEffect(() => {
-    view.getContext().then((context) => {
-      setContext(context);
+    view.getContext().then(setContext);
 
-      invoke("getLinks")
-        .then((links) => setRows(
-          links.map((link, index) => ({
-            key: `row-${index}`,
-            cells: [
-              {
-                key: `link-name-${index}`,
-                content: link.text.trim() || '---',
-              },
-              {
-                key: `link-href-${index}`,
-                content: <Link href={link.href}>{link.href}</Link>,
-              }
-            ]
-          }))
-        ))
-        .catch((err) => console.error("Failed!", err))
-      ;
-    });
+    invoke("getLinks")
+      .then((links) => setRows(
+        links.map((link, index) => ({
+          key: `row-${index}`,
+          cells: [
+            {
+              key: `link-name-${index}`,
+              content: link.text.trim() || '---',
+            },
+            {
+              key: `link-href-${index}`,
+              content: <Link href={link.href}>{link.href}</Link>,
+            }
+          ]
+        }))
+      ))
+      .catch((err) => console.error("Failed!", err))
+    ;
   }, []);
 
   const config = context?.extension.config || defaultConfig;

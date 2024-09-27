@@ -31,6 +31,7 @@ const App = () => {
         isLoading={rows ? false : true}
         head={head}
         rows={rows}
+        emptyView="No links found"
       />
     </>
   );

@@ -4,9 +4,8 @@ import { requestConfluence } from '@forge/bridge';
 
 const resolver = new Resolver();
 
-resolver.define('getLinks', async (req) => {
-  const contentId = req.context.extension.content.id;
-  const payload = req.payload;
+resolver.define('getLinks', async ({context, payload}) => {
+  const contentId = context.extension.content.id;
 
   const res = await api.asApp().requestConfluence(route`/wiki/api/v2/pages/${contentId}?body-format=VIEW`);
   const data = await res.json();
@@ -16,7 +15,7 @@ resolver.define('getLinks', async (req) => {
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;
 
-  const config = req.context.extension.config || payload.defaultConfig;
+  const config = context.extension.config || payload.defaultConfig;
 
   const selectors = [];
 

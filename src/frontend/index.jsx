@@ -25,8 +25,8 @@ const extract_options = [
 ];
 
 const defaultConfig = {
-  table_title: 'References',
-  empty_text: 'No links found',
+  table_title: "References",
+  empty_text: "No links found",
   extract: ["external", "internal", "ftp"],
 };
 

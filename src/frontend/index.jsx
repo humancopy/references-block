@@ -17,7 +17,7 @@ export const head = {
   ],
 };
 
-const extract_options = [
+const extractOptions = [
   { value: "external", label: "External" },
   { value: "internal", label: "Internal" },
   { value: "ftp", label: "(S)FTP" },
@@ -25,9 +25,9 @@ const extract_options = [
 ];
 
 const defaultConfig = {
-  table_title: "References",
-  empty_text: "No links found",
-  error_text: "There was an error fetching links",
+  tableTitle: "References",
+  emptyText: "No links found",
+  errorText: "There was an error fetching links",
   extract: ["external", "internal", "ftp"],
 };
 
@@ -35,11 +35,11 @@ const Config = () => {
   return (
     <>
       <Label>Table title</Label>
-      <Textfield name="table_title" defaultValue={defaultConfig.table_title} />
+      <Textfield name="tableTitle" defaultValue={defaultConfig.tableTitle} />
       <Label>Empty text</Label>
-      <Textfield name="empty_text" defaultValue={defaultConfig.empty_text} />
+      <Textfield name="emptyText" defaultValue={defaultConfig.emptyText} />
       <Label>Which links to extract?</Label>
-      <CheckboxGroup name="extract" options={extract_options} defaultValue={defaultConfig.extract} />
+      <CheckboxGroup name="extract" options={extractOptions} defaultValue={defaultConfig.extract} />
     </>
   );
 };
@@ -47,7 +47,7 @@ const Config = () => {
 const App = () => {
   const [context, setContext] = useState(undefined);
   const [rows, setRows] = useState(null);
-  const [empty_text, setEmptyText] = useState(null);
+  const [emptyText, setEmptyText] = useState(null);
 
   useEffect(() => {
     view.getContext().then(setContext);
@@ -55,10 +55,10 @@ const App = () => {
     invoke("getLinks", {defaultConfig: defaultConfig})
       .then((links) => {
         if (links[0] == "error") {
-          setEmptyText(defaultConfig.error_text);
+          setEmptyText(defaultConfig.errorText);
           setRows([]);
         } else {
-          setEmptyText(config?.empty_text || defaultConfig.empty_text);
+          setEmptyText(config?.emptyText || defaultConfig.emptyText);
 
           setRows(
             links.map((link, index) => ({
@@ -82,16 +82,16 @@ const App = () => {
   }, []);
 
   const config = context?.extension.config || defaultConfig;
-  const table_title = config?.table_title;
+  const tableTitle = config?.tableTitle;
 
   return (
     <>
       <DynamicTable
-        caption={table_title}
+        caption={tableTitle}
         isLoading={rows ? false : true}
         head={head}
         rows={rows}
-        emptyView={empty_text}
+        emptyView={emptyText}
       />
     </>
   );

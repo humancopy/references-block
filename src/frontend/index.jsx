@@ -27,6 +27,7 @@ const extract_options = [
 const defaultConfig = {
   table_title: "References",
   empty_text: "No links found",
+  error_text: "There was an error fetching links",
   extract: ["external", "internal", "ftp"],
 };
 
@@ -46,33 +47,42 @@ const Config = () => {
 const App = () => {
   const [context, setContext] = useState(undefined);
   const [rows, setRows] = useState(null);
+  const [empty_text, setEmptyText] = useState(null);
 
   useEffect(() => {
     view.getContext().then(setContext);
 
     invoke("getLinks", {defaultConfig: defaultConfig})
-      .then((links) => setRows(
-        links.map((link, index) => ({
-          key: `row-${index}`,
-          cells: [
-            {
-              key: `link-name-${index}`,
-              content: link.text.trim() || '---',
-            },
-            {
-              key: `link-href-${index}`,
-              content: <Link href={link.href}>{link.href}</Link>,
-            }
-          ]
-        }))
-      ))
+      .then((links) => {
+        if (links[0] == "error") {
+          setEmptyText(defaultConfig.error_text);
+          setRows([]);
+        } else {
+          setEmptyText(config?.empty_text || defaultConfig.empty_text);
+
+          setRows(
+            links.map((link, index) => ({
+              key: `row-${index}`,
+              cells: [
+                {
+                  key: `link-name-${index}`,
+                  content: link.text.trim() || '---',
+                },
+                {
+                  key: `link-href-${index}`,
+                  content: <Link href={link.href}>{link.href}</Link>,
+                }
+              ]
+            }))
+          )
+        }
+      })
       .catch((err) => console.error("Failed!", err))
     ;
   }, []);
 
   const config = context?.extension.config || defaultConfig;
   const table_title = config?.table_title;
-  const empty_text = config?.empty_text;
 
   return (
     <>

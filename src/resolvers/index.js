@@ -11,6 +11,12 @@ resolver.define('getLinks', async ({context, payload}) => {
   const data = await res.json();
   const htmlString = data.body.view.value;
 
+  if (!data || data?.errors) {
+    return ["error"];
+  }
+
+  const htmlString = data?.body?.view?.value || '';
+
   const jsdom = require("jsdom");
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;

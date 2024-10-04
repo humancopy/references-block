@@ -24,7 +24,7 @@ resolver.define('getLinks', async ({context, payload}) => {
   const selectors = [];
 
   if (config.extract.includes("external")) {
-    selectors.push('a[href^="http"]', 'a[href^="ftp"]', 'a[href^="sftp"]');
+    selectors.push('a[href^="http"]');
   }
   if (config.extract.includes("ftp")) {
     selectors.push('a[href^="ftp"]', 'a[href^="sftp"]');

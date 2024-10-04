@@ -19,7 +19,7 @@ resolver.define('getLinks', async ({context, payload}) => {
   const dom = new jsdom.JSDOM(htmlString);
   const doc = dom.window.document;
 
-  const config = context.extension.config || payload.defaultConfig;
+  const config = {...(payload?.defaultConfig || {}), ...(context.extension.config || {})};
 
   const selectors = [];
 
@@ -41,10 +41,16 @@ resolver.define('getLinks', async ({context, payload}) => {
     return [];
   }
 
-  return Array.from(doc.querySelectorAll(selector)).map((link) => ({
+  const results = Array.from(doc.querySelectorAll(selector)).map((link) => ({
     text: link.text,
     href: link.href,
   }));
+
+  return config.uniqueLinks != "yes" ? results : results.filter((value, index, self) =>
+    index === self.findIndex((t) => (
+      t.href === value.href
+    ))
+  );
 });
 
 export const handler = resolver.getDefinitions();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield, CheckboxGroup } from '@forge/react';
+import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield, CheckboxGroup, RadioGroup } from '@forge/react';
 import { view, invoke } from '@forge/bridge';
 
 export const head = {
@@ -24,11 +24,17 @@ const extractOptions = [
   { value: "emails", label: "Emails" },
 ];
 
+const uniqueLinksOptions = [
+  { name: "uniqueLinks", value: "yes", label: "Yes" },
+  { name: "uniqueLinks", value: "no", label: "No" },
+];
+
 const defaultConfig = {
   tableTitle: "References",
   emptyText: "No links found",
   errorText: "There was an error fetching links",
   extract: ["external", "internal", "ftp"],
+  uniqueLinks: "yes",
 };
 
 const Config = () => {
@@ -40,6 +46,8 @@ const Config = () => {
       <Textfield name="emptyText" defaultValue={defaultConfig.emptyText} />
       <Label>Which links to extract?</Label>
       <CheckboxGroup name="extract" options={extractOptions} defaultValue={defaultConfig.extract} />
+      <Label>Remove duplicate links?</Label>
+      <RadioGroup name="uniqueLinks" options={uniqueLinksOptions} defaultValue={defaultConfig.uniqueLinks} />
     </>
   );
 };

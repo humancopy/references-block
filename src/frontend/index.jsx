@@ -11,23 +11,28 @@ const App = () => {
   const [emptyText, setEmptyText] = useState(null);
   const [config, setConfig] = useState(null);
 
-  const head = {
-    cells: [
-      {
-        key: "link",
-        content: "Link",
-        isSortable: false,
-      },
-    ],
-  };
-
-  if (config?.tableStyle == "double") {
-    head.cells.unshift({
+  const cells = config?.tableStyle == "double" ? [
+    {
       key: "name",
       content: "Name",
       isSortable: true,
-    });
-  }
+    },
+    {
+      key: "link",
+      content: "Link",
+      isSortable: false,
+    },
+  ] : [
+    {
+      key: "link",
+      content: "",
+      isSortable: false,
+    },
+  ];
+
+  const head = {
+    cells: cells,
+  };
 
   useEffect(() => {
     view.getContext().then(setContext);

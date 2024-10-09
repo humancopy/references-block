@@ -15,6 +15,7 @@ const resolver = new Resolver();
 
   resolver.define('getLinks', async ({context, payload}) => {
     const contentId = context.extension.content.id;
+    const spaceKey = context.extension.space.key;
 
     const res = await api.asApp().requestConfluence(route`/wiki/api/v2/pages/${contentId}?body-format=VIEW`);
     const data = await res.json();
@@ -50,10 +51,15 @@ const resolver = new Resolver();
       return [];
     }
 
-    const results = Array.from(doc.querySelectorAll(selector)).map((link) => ({
-      text: link.text,
-      href: link.href,
-    }));
+    const results = Array.from(doc.querySelectorAll(selector))
+      .filter((link) => {
+        return !link.href.match(`spaces/${spaceKey}/pages/(.+/)?${contentId}`);
+      })
+      .map((link) => ({
+        text: link.text,
+        href: link.href,
+      })
+    );
 
     return config.uniqueLinks != "yes" ? results : results.filter((value, index, self) =>
       index === self.findIndex((t) => (

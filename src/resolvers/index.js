@@ -9,17 +9,17 @@ const resolver = new Resolver();
     return {...(payload?.defaultConfig || {}), ...(context.extension.config || {})};
   };
 
-  resolver.define('getConfig', ({context, payload}) => {
+  resolver.define("getConfig", ({context, payload}) => {
     return getConfig(context, payload);
   });
 
-  resolver.define('getLinks', async ({context, payload}) => {
+  resolver.define("getLinks", async ({context, payload}) => {
     const contentId = context.extension.content.id;
     const spaceKey = context.extension.space.key;
 
     const res = await api.asApp().requestConfluence(route`/wiki/api/v2/pages/${contentId}?body-format=VIEW`);
     const data = await res.json();
-    const htmlString = data?.body?.view?.value || '';
+    const htmlString = data?.body?.view?.value || "";
 
     if (!data || data?.errors || !htmlString) {
       return ["error"];
@@ -46,7 +46,7 @@ const resolver = new Resolver();
       selectors.push('a[href^="mailto:"]');
     }
 
-    const selector = selectors.join(',');
+    const selector = selectors.join(",");
     if (!selector) {
       return [];
     }

@@ -1,14 +1,11 @@
 import Resolver from '@forge/resolver';
 import api, { route } from '@forge/api';
 import { requestConfluence } from '@forge/bridge';
+import { getConfig } from '../Functions';
 
 const resolver = new Resolver();
 
 (() => {
-  const getConfig = (context, payload) => {
-    return {...(payload?.defaultConfig || {}), ...(context.extension.config || {})};
-  };
-
   resolver.define("getConfig", ({context, payload}) => {
     return getConfig(context, payload);
   });

@@ -17,7 +17,7 @@ export const head = {
   ],
 };
 
-const extractOptions = [
+const extractLinksOptions = [
   { value: "external", label: "External" },
   { value: "internal", label: "Internal" },
   { value: "ftp", label: "(S)FTP" },
@@ -33,7 +33,7 @@ const defaultConfig = {
   tableTitle: "References",
   emptyText: "No links found",
   errorText: "There was an error fetching links",
-  extract: ["external", "internal", "ftp"],
+  extractLinks: ["external", "internal", "ftp"],
   uniqueLinks: "yes",
 };
 
@@ -45,7 +45,7 @@ const Config = () => {
       <Label>Empty text</Label>
       <Textfield name="emptyText" defaultValue={defaultConfig.emptyText} />
       <Label>Which links to extract?</Label>
-      <CheckboxGroup name="extract" options={extractOptions} defaultValue={defaultConfig.extract} />
+      <CheckboxGroup name="extractLinks" options={extractLinksOptions} defaultValue={defaultConfig.extractLinks} />
       <Label>Remove duplicate links?</Label>
       <RadioGroup name="uniqueLinks" options={uniqueLinksOptions} defaultValue={defaultConfig.uniqueLinks} />
     </>

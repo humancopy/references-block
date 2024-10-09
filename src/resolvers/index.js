@@ -23,16 +23,16 @@ resolver.define('getLinks', async ({context, payload}) => {
 
   const selectors = [];
 
-  if (config.extract.includes("external")) {
+  if (config.extractLinks.includes("external")) {
     selectors.push('a[href^="http"]');
   }
-  if (config.extract.includes("ftp")) {
+  if (config.extractLinks.includes("ftp")) {
     selectors.push('a[href^="ftp"]', 'a[href^="sftp"]');
   }
-  if (config.extract.includes("internal")) {
+  if (config.extractLinks.includes("internal")) {
     selectors.push('a[href^="/"]');
   }
-  if (config.extract.includes("emails")) {
+  if (config.extractLinks.includes("emails")) {
     selectors.push('a[href^="mailto:"]');
   }
 

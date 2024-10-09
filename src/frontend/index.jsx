@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ForgeReconciler, { Text, DynamicTable, Link, Label, Textfield, CheckboxGroup, RadioGroup } from '@forge/react';
 import { view, invoke } from '@forge/bridge';
 
+const MAX_TITLE_LENGTH = 35;
+
 export const head = {
   cells: [
     {
@@ -52,6 +54,11 @@ const Config = () => {
   );
 };
 
+const trimString = (string) => {
+  string = string.trim();
+  return string.length > MAX_TITLE_LENGTH ? `${string.substring(0, MAX_TITLE_LENGTH - 3)}...` : string;
+};
+
 const App = () => {
   const [context, setContext] = useState(undefined);
   const [rows, setRows] = useState(null);
@@ -78,11 +85,11 @@ const App = () => {
               cells: [
                 {
                   key: `link-name-${index}`,
-                  content: link.text.trim() || '---',
+                  content: trimString(link.text) || '---',
                 },
                 {
                   key: `link-href-${index}`,
-                  content: <Link href={link.href}>{link.href}</Link>,
+                  content: <Link href={link.href}>{trimString(link.href)}</Link>,
                 }
               ]
             }))

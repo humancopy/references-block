@@ -4,21 +4,6 @@ import { view, invoke } from '@forge/bridge';
 
 const MAX_TITLE_LENGTH = 35;
 
-export const head = {
-  cells: [
-    {
-      key: "name",
-      content: "Name",
-      isSortable: true,
-    },
-    {
-      key: "link",
-      content: "Link",
-      isSortable: false,
-    },
-  ],
-};
-
 const extractLinksOptions = [
   { value: "external", label: "External" },
   { value: "internal", label: "Internal" },
@@ -31,12 +16,18 @@ const uniqueLinksOptions = [
   { name: "uniqueLinks", value: "no", label: "No" },
 ];
 
+const tableStyleOptions = [
+  { name: "tableStyle", value: "single", label: "Single column" },
+  { name: "tableStyle", value: "double", label: "Separate columns" },
+];
+
 const defaultConfig = {
   tableTitle: "References",
   emptyText: "No links found",
   errorText: "There was an error fetching links",
   extractLinks: ["external", "internal", "ftp"],
   uniqueLinks: "yes",
+  tableStyle: "single",
 };
 
 const Config = () => {
@@ -50,6 +41,8 @@ const Config = () => {
       <CheckboxGroup name="extractLinks" options={extractLinksOptions} defaultValue={defaultConfig.extractLinks} />
       <Label>Remove duplicate links?</Label>
       <RadioGroup name="uniqueLinks" options={uniqueLinksOptions} defaultValue={defaultConfig.uniqueLinks} />
+      <Label>Table style</Label>
+      <RadioGroup name="tableStyle" options={tableStyleOptions} defaultValue={defaultConfig.tableStyle} />
     </>
   );
 };
@@ -65,39 +58,70 @@ const App = () => {
   const [emptyText, setEmptyText] = useState(null);
   const [config, setConfig] = useState(null);
 
+  const head = {
+    cells: [
+      {
+        key: "link",
+        content: "Link",
+        isSortable: false,
+      },
+    ],
+  };
+
+  if (config?.tableStyle == "double") {
+    head.cells.unshift({
+      key: "name",
+      content: "Name",
+      isSortable: true,
+    });
+  }
+
   useEffect(() => {
     view.getContext().then(setContext);
 
     invoke("getConfig", {defaultConfig: defaultConfig})
-      .then(setConfig);
+      .then((config) => {
+        setConfig(config);
 
-    invoke("getLinks", {defaultConfig: defaultConfig})
-      .then((links) => {
-        if (links[0] == "error") {
-          setEmptyText(defaultConfig.errorText);
-          setRows([]);
-        } else {
-          setEmptyText(config?.emptyText || defaultConfig.emptyText);
+        setEmptyText(config?.emptyText || defaultConfig.emptyText);
 
-          setRows(
-            links.map((link, index) => ({
-              key: `row-${index}`,
-              cells: [
-                {
-                  key: `link-name-${index}`,
-                  content: trimString(link.text) || '---',
-                },
-                {
-                  key: `link-href-${index}`,
-                  content: <Link href={link.href}>{trimString(link.href)}</Link>,
-                }
-              ]
-            }))
-          )
-        }
-      })
-      .catch((err) => console.error("Failed!", err))
-    ;
+        invoke("getLinks", {defaultConfig: defaultConfig})
+          .then((links) => {
+            if (links[0] == "error") {
+              setEmptyText(defaultConfig.errorText);
+              setRows([]);
+            } else {
+              setEmptyText(config?.emptyText || defaultConfig.emptyText);
+              const tableStyle = config?.tableStyle;
+
+              setRows(
+                links.map((link, index) => {
+                  const result = {
+                    key: `row-${index}`,
+                    cells: [
+                      {
+                        key: `link-href-${index}`,
+                        content: <Link href={link.href}>{tableStyle == "double" ? trimString(link.href) : trimString(link.text)}</Link>,
+                      }
+                    ],
+                  };
+
+                  if (tableStyle == "double") {
+                    result.cells.unshift({
+                      key: `link-name-${index}`,
+                      content: trimString(link.text) || '---',
+                    });
+                  }
+
+                  return result;
+                })
+              )
+            }
+          })
+          .catch((err) => console.error("Failed!", err))
+        ;
+      });
+
   }, []);
 
   return (

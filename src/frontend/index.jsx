@@ -56,9 +56,13 @@ const App = () => {
   const [context, setContext] = useState(undefined);
   const [rows, setRows] = useState(null);
   const [emptyText, setEmptyText] = useState(null);
+  const [config, setConfig] = useState(null);
 
   useEffect(() => {
     view.getContext().then(setContext);
+
+    invoke("getConfig", {defaultConfig: defaultConfig})
+      .then(setConfig);
 
     invoke("getLinks", {defaultConfig: defaultConfig})
       .then((links) => {
@@ -89,13 +93,10 @@ const App = () => {
     ;
   }, []);
 
-  const config = context?.extension.config || defaultConfig;
-  const tableTitle = config?.tableTitle;
-
   return (
     <>
       <DynamicTable
-        caption={tableTitle}
+        caption={config?.tableTitle}
         isLoading={rows ? false : true}
         head={head}
         rows={rows}

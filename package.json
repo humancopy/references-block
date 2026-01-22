@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "eslint": "^9.21.0",
-    "eslint-plugin-react-hooks": "^5.1.0"
+    "eslint-plugin-react-hooks": "^7.0.1"
   },
   "dependencies": {
     "@forge/bridge": "5.11.0",

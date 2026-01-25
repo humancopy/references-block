@@ -15,7 +15,7 @@
     "@forge/bridge": "5.11.0",
     "@forge/react": "11.10.0",
     "@forge/resolver": "1.7.1",
-    "jsdom": "^26.0.0",
+    "jsdom": "^27.4.0",
     "react": "^19.0.0"
   }
 }
